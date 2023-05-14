@@ -1,0 +1,232 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="vh-50 mt-5">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+                  Add Your Event
+                </p>
+                <form class="mx-1 mx-md-4" id="create-event-form">
+                  {% csrf_token %}
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="name"> Name: </label>
+                      <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="description">
+                        Description:
+                      </label>
+                      <textarea
+                        name="description"
+                        rows="3"
+                        id="description"
+                        class="form-control"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="date"> Date: </label>
+                      <input
+                        type="date"
+                        name="date"
+                        id="date"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="time"> Time: </label>
+                      <input
+                        type="time"
+                        name="time"
+                        id="time"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="venue"> Venue: </label>
+                      <input
+                        type="text"
+                        name="venue"
+                        id="venue"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="image"> Image: </label>
+                      <input
+                        type="file"
+                        name="image"
+                        id="image"
+                        class="form-control"
+                        accept="image/png, image/jpeg"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                      Create
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div
+                class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2"
+              >
+                <img
+                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                  class="img-fluid"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const createEventForm = document.querySelector("#create-event-form");
+
+  createEventForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(createEventForm);
+
+    fetch("/create-event/", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Event created successfully
+          // Redirect to event detail page or display success message
+          alert("Event created.");
+          document.location.href="/all-events/";
+        } else {
+          // Handle error response
+          alert("Error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
+{% comment %}
+<script>
+  const createEventForm = document.getElementById("create-event");
+  console.log(createEventForm);
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) == name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  async function createEvent(event) {
+    event.preventDefault();
+    const token = localStorage.getItem("access_token");
+    const formData = new FormData();
+    const name = document.getElementById("name").value;
+    const description = document.getElementById("description").value;
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+    const venue = document.getElementById("venue").value;
+    const image = document.getElementById("image").value;
+
+    console.log(name);
+    console.log(description);
+    console.log(date);
+    console.log(time);
+    console.log(venue);
+    console.log(image);
+
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("date", date);
+    formData.append("time", time);
+    formData.append("venue", venue);
+    formData.append("image", image);
+    const csrftoken = getCookie("csrftoken");
+    console.log(formData);
+
+    const response = await fetch("http://127.0.0.1:8000/create-event/", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type":
+          "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+        "X-CSRFToken": csrftoken,
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+    alert("Event created successfully!");
+    createEventForm.reset();
+  }
+
+  createEventForm.addEventListener("submit", createEvent);
+</script>
+{% endcomment %} {% endblock content %}

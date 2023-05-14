@@ -1,0 +1,66 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %} 
+
+<h2 class="my-4 text-center">Events you would like to explore</h2>
+<div class="row row-cols-1 row-cols-md-3 px-5" id="event-list">
+  {% for event in events %}
+    <div class="col mb-4" style="height:100%;">
+      <div class="card event-item" data-event-id="{{ event.id }}">
+        <div class="view overlay">
+          {% if event.image %}
+            <img class="card-img-top" src="{{event.image.url}}" alt="{{ event.name }}" />
+          {% endif %}
+          <div class="mask rgba-white-slight"></div>
+        </div>
+        {% if event in liked_events %}
+            <a id="heart" class='liked btn-floating btn-action ml-auto mr-4 mdb-color lighten-3 waves-effect waves-light' data-event="{{ event.id }}" data-action="unlike">
+              <i class="fas fa-heart pl-1" style="height: 1.8em !important;" aria-hidden="true"></i>
+            </a>
+          {% else %}  
+            <a id="heart" class="liked btn-floating btn-action ml-auto mr-4 mdb-color lighten-3 waves-effect waves-light" data-event="{{ event.id }}" data-action="like">
+              <i class="far fa-heart pl-1" style="height: 1.8em !important;" aria-hidden="true"></i>
+            </a>  
+          {% endif %}
+        <div class="card-body">
+          <h5 class="card-title text-center my-3">{{event.name}}</h5>
+          <p class="card-text">{{event.description|truncatechars:45}}</p>
+          <p class="card-text">Date: {{event.date}}</p>
+          <p class="card-text">Time: {{event.time}}</p>
+        </div>
+        <div class="card-footer">
+          <p class="card-text text-center">Venue: {{event.venue}}</p>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  $(document).ready(function () {
+    $(".liked").click(function (e) {
+      e.preventDefault();
+      
+      const eventId = $(this).attr('data-event');
+      const likeBtn = $('.liked[data-event="' + eventId + '"]');
+      const url = '/all-events/' + eventId + '/';
+  
+      $.ajax({
+        type: 'POST',
+        url: url,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-CSRFToken', '{{csrf_token}}');
+          xhr.setRequestHeader("Authorization", `Bearer ${localStorage.getItem("accessToken")}`)
+        },
+        success: function (response) {
+          if (!response.liked) {
+            likeBtn.html('<i class="far fa-heart pl-1" style="height: 1.8em !important;" aria-hidden="true"></i>');
+          } else {
+            likeBtn.html('<i class="fas fa-heart pl-1" style="height: 1.8em !important;" aria-hidden="true"></i>');
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock content %}

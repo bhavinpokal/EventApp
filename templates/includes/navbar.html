@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/all-events"> Event App </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" id="login-nav" style="display: none">
+          <a href="/user-login" class="btn btn-outline-primary mx-2 px-3">
+            Login
+          </a>
+        </li>
+        <li class="nav-item" id="register-nav" style="display: none">
+          <a href="/user-register" class="btn btn-outline-primary mx-2 px-3">
+            Register
+          </a>
+        </li>
+        <li class="nav-item" id="create-event-nav" style="display: none">
+          <a href="/create-event" class="btn btn-outline-primary mx-2 px-3">
+            Create Event
+          </a>
+        </li>
+        <li class="nav-item" id="user-events-nav" style="display: none">
+          <a href="/user-events" class="btn btn-outline-primary mx-2 px-3">
+            My Events
+          </a>
+        </li>
+        <li class="nav-item" id="logout-nav" style="display: none">
+          <a href="/user-login" class="btn btn-outline-primary mx-2 px-3" onclick="logoutUser()">
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<script>
+  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (accessToken && refreshToken) {
+    document.getElementById("logout-nav").style.display = "block";
+    document.getElementById("create-event-nav").style.display = "block";
+    document.getElementById("user-events-nav").style.display = "block";
+  } else {
+    document.getElementById("login-nav").style.display = "block";
+    document.getElementById("register-nav").style.display = "block";
+  }
+
+  function logoutUser() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    
+    alert("User logged out successfully!");
+    
+    document.getElementById("logout-nav").style.display = "none";
+    document.getElementById("create-event-nav").style.display = "none";
+    document.getElementById("user-events-nav").style.display = "none";
+    document.getElementById("login-nav").style.display = "block";
+    document.getElementById("register-nav").style.display = "block";
+  }
+</script>

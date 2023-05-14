@@ -1,0 +1,132 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="vh-50 mt-5">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+                  Sign up
+                </p>
+                <form class="mx-1 mx-md-4" id="register-form">
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="first_name">
+                        First Name:
+                      </label>
+                      <input
+                        type="text"
+                        name="first_name"
+                        id="first_name"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="last_name">
+                        Last Name:
+                      </label>
+                      <input
+                        type="text"
+                        name="last_name"
+                        id="last_name"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="email">
+                        Email:
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="password">
+                        Password:
+                      </label>
+                      <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="form-outline flex-fill mb-0">
+                      <label class="form-label" for="confirm_password">
+                        Confirm Password:
+                      </label>
+                      <input
+                        type="password"
+                        name="confirm_password"
+                        id="confirm_password"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                    <button type="submit" id="submit" class="btn btn-primary btn-lg">
+                      Register
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                <img
+                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                  class="img-fluid"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const registerForm = document.getElementById("register-form");
+
+  async function registerUser(event) {
+    event.preventDefault();
+    const formData = new FormData(registerForm);
+    const response = await fetch("/user-register/", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    localStorage.setItem("refreshToken", data.refresh);
+    localStorage.setItem("accessToken", data.access);
+    alert("User registered successfully! Your access token: ", data.access);
+    registerForm.reset();
+    document.location.href="/all-events/";
+  }
+
+  registerForm.addEventListener("submit", registerUser);
+</script>
+
+{% endblock content %}
